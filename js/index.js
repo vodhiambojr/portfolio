@@ -1,50 +1,54 @@
-$(document).ready(function() {
+// Smooth Page Scrolling
+$('a[href*="#"]:not([href="#"])').click(function() {
+  if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+    var target = $(this.hash);
+    target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+    if (target.length) {
+      $('html, body').animate({
+        scrollTop: target.offset().top
+      }, 1000);
+      return false;
+    }
+  }
+});
 
-    // Transition effect for navbar and back-to-top icon
-    $(window).scroll(function() {
-      // checks if window is scrolled more than 500px, adds/removes solid class
-      if($(this).scrollTop() > 550) { 
-          $('.navbar').addClass('solid');
-          $('.back-to-top').addClass('visible'); 
-      } else {
-          $('.navbar').removeClass('solid');
-          $('.back-to-top').removeClass('visible');  
-      }
-
-    });
-
-
-    // Scrolling effect for Arrow icons
-    $("#scrollIcon").click(function(e) {
-        e.preventDefault();
-        $.scrollTo($("#about"), 1000);
-    });
-    $("#nav-about").click(function(e) {
-        e.preventDefault();
-        $.scrollTo($("#about"), 1000);
+// Section Underlying
+$(document).ready(function () {
+    $(document).on("scroll", onScroll);
     
-    });
-    $("#nav-portfolio").click(function(e) {
+    //smoothscroll
+    $('a[href^="#"]').on('click', function (e) {
         e.preventDefault();
-        $.scrollTo($("#prj1"), 1000);
-    });
-    $("#nav-contact").click(function(e) {
-        e.preventDefault();
-        $.scrollTo($("#Cont"), 1000);
-    });
-    $("#nav-home").click(function(e) {
-        e.preventDefault();
-        $.scrollTo($("#hm"), 1000);
-    });
-    $(".navbar-brand").click(function(e) {
-        e.preventDefault();
-        $.scrollTo(0, 1000);
-    });
+        $(document).off("scroll");
+        
+        $('a').each(function () {
+            $(this).removeClass('active');
+        })
+        $(this).addClass('active');
       
-  });
+        var target = this.hash,
+            menu = target;
+        $target = $(target);
+        $('html, body').stop().animate({
+            'scrollTop': $target.offset().top+2
+        }, 1000, 'swing', function () {
+            window.location.hash = target;
+            $(document).on("scroll", onScroll);
+        });
+    });
+});
 
-$('#toggle').click(function() {
-   $(this).toggleClass('active');
-   $('#overlay').toggleClass('open');
-   
-  });
+function onScroll(event){
+    var scrollPos = $(document).scrollTop();
+    $('#navbar a').each(function () {
+        var currLink = $(this);
+        var refElement = $(currLink.attr("href"));
+        if (refElement.position().top <= scrollPos && refElement.position().top + refElement.height() > scrollPos) {
+            $('#navbar div div a').removeClass("active");
+            currLink.addClass("active");
+        }
+        else{
+            currLink.removeClass("active");
+        }
+    });
+}
